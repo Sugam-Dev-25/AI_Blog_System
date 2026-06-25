@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./app/routes/authRoutes");
+const categoryRoutes = require("./app/routes/categoryRoutes");
 
 
 const connectDB = require("./app/config/databaseConnection");
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/category", categoryRoutes);
 
 app.get("/",(req,res)=>{
     return res.status(200).json({
