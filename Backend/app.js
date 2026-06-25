@@ -1,9 +1,11 @@
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+
+const authRoutes = require("./app/routes/authRoutes");
+
 
 const connectDB = require("./app/config/databaseConnection");
 const app = express();
@@ -15,6 +17,8 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/auth", authRoutes);
 
 app.get("/",(req,res)=>{
     return res.status(200).json({
