@@ -37,16 +37,36 @@ router.put(
 router.get(
     "/pending-blogs",
     authMiddleware.verifyToken,
-    BlogController.getPendingBlogs,
     roleMiddleware.authorize("admin"),
+    BlogController.getPendingBlogs,
+    
 
 );
 
 router.put(
     "/publish-blog/:id",
     authMiddleware.verifyToken,
-    BlogController.publishBlog,
     roleMiddleware.authorize("admin"),
+    BlogController.publishBlog,
+    
+);
+
+router.put(
+    "/reject-blog/:id",
+    authMiddleware.verifyToken,
+    roleMiddleware.authorize("admin"),
+    BlogController.rejectBlog,
+    
+);
+
+router.get(
+    "/",
+    BlogController.getPublishedBlogs
+);  
+
+router.get(
+    "/:slug",
+    BlogController.getSingleBlog
 );
 
 module.exports = router; 

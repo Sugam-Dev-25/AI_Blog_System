@@ -260,7 +260,100 @@ class BlogController {
             });
         }
     }
-    
+
+    async rejectBlog(req, res) {
+        try {
+            const { id } = req.params;
+
+            const blog = await Blog.findById(id);
+            if (!blog) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Blog not found",
+                });
+            }
+
+            if (blog.status !== "pending") {
+                return res.status(400).json({
+                    success: false,
+                    message: "Only pending blogs can be rejected",
+                });
+            }
+
+            blog.status = "rejected";
+            await blog.save();
+
+            return res.status(200).json({
+                success: true,
+                message: "Blog rejected successfully",
+                blog,
+            });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+    }
+
+    async getPublishedBlogs(req, res) {
+        try {
+            const blogs = await Blog.find({ status: "published" })
+                .populate("author", "name")
+                .populate("category", "name slug")
+                .sort({ createdAt: -1 });
+            return res.status(200).json({
+                success: true,
+                message: "Blogs fetched successfully",
+                blogs,
+                totalBlogs: blogs.length,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+    }
+
+    async getSingleBlog(req, res){
+
+        try{
+            const {slug} = req.params;
+
+            const blog = await Blog.findOne({
+                slug,
+                status:"published"
+            })
+            .populate("author", "name")
+            .populate("category", "name slug");
+
+            if(!blog){
+                return res.status(404).json({
+                    success: false,
+                    message: "Blog not found",
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "Blog fetched successfully",
+                blog,
+            });
+
+        }catch(error){
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Something went wrong",
+                
+            })
+        }
+
+    }
 
 }
 
